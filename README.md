@@ -1,4 +1,4 @@
-# handson_DL_UNIVR_2019
+# Tumor Segmentation
 
 ## 1 - Install the pytorch enviroment
 
