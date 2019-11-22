@@ -2,11 +2,13 @@ import numpy as np
 from skimage.transform import rescale, rotate
 from torchvision.transforms import Compose
 
-def transforms(norm=None, angle=None, flip_prob=None):
+def transforms(norm=None, crop_size=None, angle=None, flip_prob=None):
     transform_list = []
 
     if norm is not None:
         transform_list.append(Normalize(norm))
+    if crop_size is not None:
+        transform_list.append(Crop(crop_size))
     if angle is not None:
         transform_list.append(Rotate(angle))
     if flip_prob is not None:
@@ -29,6 +31,20 @@ class Normalize(object):
         
         # if img.max()>0:
             # mask = mask/mask.max()
+
+        return img, mask
+        
+class Crop(object):
+
+    def __init__(self, crop_size):
+        self.crop_size = crop_size
+
+    def __call__(self, sample):
+        img, mask = sample
+        c,x,y = img.shape
+        
+        img = img[:,int(x/2 - self.crop_size/2):int(x/2 + self.crop_size/2),int(y/2 - self.crop_size/2):int(y/2 + self.crop_size/2)]
+        mask = mask[int(x/2 - self.crop_size/2):int(x/2 + self.crop_size/2),int(y/2 - self.crop_size/2):int(y/2 + self.crop_size/2)]
 
         return img, mask
 
